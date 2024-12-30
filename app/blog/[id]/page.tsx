@@ -2,7 +2,11 @@ import { BlogDetails } from "@/app/data/details";
 import Image from "next/image";
 import CommentBox from "@/app/components/comments";
 
-
+interface DetailPageProps {
+  params: {
+    id: string; // Matches the `[id]` segment
+  };
+}
 
 export async function generateStaticParams() {
   // Map the IDs of products to create static paths
@@ -11,7 +15,7 @@ export async function generateStaticParams() {
   }));
 }
 
-const DetailPage = ({ params }: { params: { id: string } }) => {
+const DetailPage = ({ params }: DetailPageProps) => {
   // Find the product based on the dynamic ID
   const detail = BlogDetails.find((p) => p.id === params.id);
 
