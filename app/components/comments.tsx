@@ -1,18 +1,37 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from "react";
+
+interface Comment {
+  name: string;
+  text: string;
+}
 
 const CommentBox = () => {
-  const [name, setName] = useState('');
-  const [comment, setComment] = useState('');
-  const [comments, setComments] = useState<{ name: string; text: string }[]>([]);
+  const [name, setName] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<Comment[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load comments from localStorage when the component mounts
+  useEffect(() => {
+    const storedComments = localStorage.getItem("comments");
+    if (storedComments) {
+      setComments(JSON.parse(storedComments));
+    }
+  }, []);
+
+  // Save comments to localStorage whenever the `comments` state updates
+  useEffect(() => {
+    localStorage.setItem("comments", JSON.stringify(comments));
+  }, [comments]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (name && comment) {
-      setComments([...comments, { name, text: comment }]);
-      setName('');
-      setComment('');
+    if (name.trim() && comment.trim()) {
+      const newComment: Comment = { name, text: comment };
+      setComments((prevComments) => [...prevComments, newComment]);
+      setName(""); // Clear input fields
+      setComment("");
     }
   };
 
